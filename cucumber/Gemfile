@@ -1,0 +1,11 @@
+source "https://rubygems.org"
+
+group(:test) do
+  gem 'cucumber'
+  gem 'capybara'
+  gem 'rspec'
+  gem 'selenium-webdriver'
+  gem 'capybara-screenshot'
+  gem 'rest-client'
+  gem 'activesupport'
+end

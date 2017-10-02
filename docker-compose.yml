@@ -1,0 +1,64 @@
+version: '2'
+
+services:
+  web:
+    image: 'bitnami/codeigniter:latest'
+    ports:
+      - '8000:8000'
+    volumes:
+      - './web:/app'
+    depends_on:
+      - mariadb
+      - schema
+    networks:
+      - example-web-network
+    container_name: web
+
+  mariadb:
+    build: mariadb/.
+    ports:
+      - '3306:3306'
+    networks:
+      - example-web-network
+    container_name: mariadb
+    # Use volumes to persist the database
+    #volumes:
+    #  - './mariadb:/bitnami'
+
+  schema:
+    build: mariadb/schema/.
+    networks:
+      - example-web-network
+    container_name: schema
+    depends_on:
+      - mariadb
+
+  cucumber:
+    build: cucumber/.
+    volumes:
+      - .:/simm
+    environment:
+      - APP_HOST=http://web:8000
+      - SELENIUM_REMOTE_HOST=selenium:4444
+    depends_on:
+      - selenium
+      - web
+    working_dir: /simm/cucumber
+    command: sh -c "./wait-for-it.sh web:3000 --timeout=60 -- ./wait-for-it.sh selenium:4444 --timeout=60 -- bundle exec cucumber --tags ~@wip"
+    networks:
+      - example-web-network
+    container_name: cucumber
+
+  selenium:
+    image: selenium/standalone-firefox-debug:2.47.1
+    networks:
+        - example-web-network
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      # 5900 porta utilizada para fazer VNC no container (localhost). senha: 'secret'.
+    container_name: selenium
+
+networks:
+  example-web-network:
+    driver: bridge
