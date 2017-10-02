@@ -1,4 +1,4 @@
-# Codeigniter + MariaDB + Automated Tests (Cucumber) #
+# Docker + Codeigniter + MariaDB + Automated Tests (Cucumber) #
 ### What is this repository for? ###
 This is a docker compose Web Application project using the PHP framework Codeigniter, a database with MariaDB and automated tests with Cucumber and Ruby.
 
